@@ -51,6 +51,19 @@ spec:
       - name: {{ .Values.repoServer.name }}
         image: {{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default .Values.global.image.tag .Values.repoServer.image.tag }}
         imagePullPolicy: {{ default .Values.global.image.imagePullPolicy .Values.repoServer.image.imagePullPolicy }}
+        env:
+          - name: "AWS_ACCESS_KEY_ID"
+            valueFrom:
+              secretKeyRef:
+                name: "argocd-secret"
+                key: "aws.accessKeyId"
+          - name: "AWS_SECRET_ACCESS_KEY"
+            valueFrom:
+              secretKeyRef:
+                name: "argocd-secret"
+                key: "aws.secretAccessKey"
+          - name: "TEST_ENV_VAR"
+            value: "TESTING"
         command:
         - uid_entrypoint.sh
         - argocd-repo-server
@@ -68,19 +81,6 @@ spec:
         {{- if .Values.repoServer.containerSecurityContext }}
         securityContext: {{- toYaml .Values.repoServer.containerSecurityContext | nindent 10 }}
         {{- end }}
-        env:
-          - name: "AWS_ACCESS_KEY_ID"
-            valueFrom:
-              secretKeyRef:
-                name: "argocd-secret"
-                key: "aws.accessKeyId"
-          - name: "AWS_SECRET_ACCESS_KEY"
-            valueFrom:
-              secretKeyRef:
-                name: "argocd-secret"
-                key: "aws.secretAccessKey"
-          - name: "TEST_ENV_VAR"
-            value: "TESTING"
         volumeMounts:
         {{- if .Values.repoServer.volumeMounts }}
 {{- toYaml .Values.repoServer.volumeMounts | nindent 8}}
@@ -90,12 +90,12 @@ spec:
           name: gpg-keyring
         {{- end }}
         {{- if .Values.configs.knownHosts }}
-        - mountPath: /app/config/ssh
-          name: ssh-known-hosts
+        - mountPath: /app/config/sshxxxxxxxxx
+          name: ssh-known-hostsxxxxx
         {{- end }}
         {{- if .Values.configs.tlsCerts }}
-        - mountPath: /app/config/tls
-          name: tls-certs
+        - mountPath: /app/config/tlsxxxx
+          name: tls-certsxxx
         {{- end }}
         ports:
         - name: repo-server
